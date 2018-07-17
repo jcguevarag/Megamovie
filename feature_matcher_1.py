@@ -3,7 +3,7 @@ import cv2
 from matplotlib import pyplot as plt
 
 
-img1 = cv2.imread('img5.jpg',0)          # queryImage
+img1 = cv2.imread('img5.jpg',0) # queryImage
 img2 = cv2.imread('img6.jpg',0) # trainImage
 
 
