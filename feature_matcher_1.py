@@ -34,7 +34,7 @@ for mat in matches:
     img1_idx = mat.queryIdx
     img2_idx = mat.trainIdx
 
-    print('Img 1 Point: {}'.format(str(kp1[img1_idx].pt)))
-    print('Img 2 Point: {}'.format(str(kp2[img2_idx].pt)))
+    print('Img 1 Point: {}'.format(str([int(x) for x in kp1[img1_idx].pt])))
+    print('Img 2 Point: {}'.format(str([int(x) for x in kp2[img2_idx].pt])))
 
 

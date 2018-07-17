@@ -12,7 +12,7 @@ from datetime import datetime
 THRESHOLD = 0.2 # The highest pixel value that will be considered as part of the corona
 REALLY_BIG = 10 # Placeholder value. Can be changed to anything above 1.
 ROTATE_BY = 1 # Angle rotation step. Change this to change the degrees you want to rotate it by.
-
+STORE_EVERY = 10 # Every STORE_EVERY configuration will be saved. 
 
 a = skimage.color.rgb2gray(skimage.io.imread('5853.png')) # The static, already aligned image in grayscale
 b = skimage.color.rgb2gray(skimage.io.imread('5854.png')) # The modular image that we are trying to align in grayscale
@@ -53,7 +53,7 @@ for j in range(0,360,ROTATE_BY): # Rotate up to 360 Degrees by the Angle Step
     config = Configuration(smallest_row,smallest_col,greatest_row,greatest_col,f,e,j) # Creates a new configuration
     if configurations is None or config < configurations:
         configurations = config
-    if j % 10 == 0: # Stores every 10 angle steps. Can be changed by changing the number. Can also make a variable.
+    if j % STORE_EVERY == 0: # Stores every 10 angle steps. Can be changed by changing the number. Can also make a variable.
         stored.append(config)
 
 skimage.io.imshow(configurations.superimposed_image) # Shows the best configuration
