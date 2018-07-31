@@ -4,19 +4,21 @@ import skimage.util
 import skimage.color
 import skimage.transform
 import copy
+import os
 # import cv2
 import numpy as np
-# import multiprocessing
+import multiprocessing
 from matplotlib import pyplot as plt
 from configuration import Configuration
 from datetime import datetime
-import sunpy
-import sunpy.map
-# from joblib import Parallel, delayed
+# import sunpy
+# import sunpy.map
+from joblib import Parallel, delayed
 
 
 
-def analyze(c,b):
+def analyze(c,b,name):
+    print(name)
     THRESHOLD = 0.5  # The highest pixel value that will be considered as part of the corona
     REALLY_BIG = 10  # Placeholder value. Can be changed to anything above 1.
     ROTATE_BY = 5  # Angle rotation step. Change this to change the degrees you want to rotate it by.
@@ -28,7 +30,7 @@ def analyze(c,b):
     # offset_y = img2_points[1] - img1_points[1]
     area_of = 0
     for j in range(0,360,ROTATE_BY): # Rotate up to 360 Degrees by the Angle Step
-        print('We are on degree: {}'.format(str(j)), 'The Time is: {}'.format(str(datetime.now())))
+        print('We are on image: {}, We are on degree: {}'.format(name,str(j)), 'The Time is: {}'.format(str(datetime.now())))
         f = copy.deepcopy(c)
         e = skimage.transform.rotate(b, j, center=[3072, 3072], preserve_range=True)
         e = skimage.util.invert(e) # Prepare the image to be super-imposed on the constant image
@@ -56,23 +58,32 @@ def analyze(c,b):
         config = Configuration(area_of,f,e,j) # Creates a new configuration
         if configurations is None or config < configurations:
             configurations = config
-    return configurations
-# if __name__ == '__main__':
-# NUM_CORES = 6
-orig_a = sunpy.map.Map('704f3955a40167b232b5c825f9bb1ff735dcabcdfffbc84d9dfad9b0e25e6f8d_level_0.fits').data
-orig_b = sunpy.map.Map('8e6861a87b4ded5e7993c0bfa7ec850cb7b076064edd13d833b2444668d88942_level_0.fits').data
+    # return configurations
+    with open(name[:-3] + '.txt', 'w+') as file:
+        file.write(configurations.__str__() +'\n')
 
-a = skimage.color.rgb2gray(orig_a)  # The static, already aligned image in grayscale
-b = skimage.color.rgb2gray(orig_b)  # The modular image that we are trying to align in grayscale
-#b = skimage.transform.rotate(b, 100, center=[3072,3072], preserve_range=True)
-c = skimage.util.invert(a)  # Invert the image so that black becomes white, and vice-versa
-# g = skimage.util.invert(b)
-configurations = None  # Stores the best configuration
+if __name__ == '__main__':
+    #NUM_CORES = 6
+    orig_a = skimage.io.imread('images_0-3_jpg/7b1c921576ecd4a6d1164812eded78846c75b9806acab57a954c44a9b0093366_level_0.fits_2853.jpg')
+    #orig_b = skimage.io.imread('images_0-3_jpg/6f9bcddca6852008ca12665ea1fb172a26a6548dd0ccc73d944b8ddbc632e564_level_0.fits_2597.jpg')
 
-del(orig_a)
-del(orig_b)
+    a = skimage.color.rgb2gray(orig_a)  # The static, already aligned image in grayscale
+    #b = skimage.color.rgb2gray(orig_b)  # The modular image that we are trying to align in grayscale
+    #b = skimage.transform.rotate(b, 100, center=[3072,3072], preserve_range=True)
+    c = skimage.util.invert(a)  # Invert the image so that black becomes white, and vice-versa
+    # g = skimage.util.invert(b)
+    configurations = []  # Stores the best configuration
+    directory = os.listdir(os.listdir('.')[7])
+    del(orig_a)
+    directory = iter(directory)
+    next(directory)
+    #print(directory)
 
-res = analyze(c,b)
+    # for img in directory:
+    #     configurations.append(analyze(c,skimage.color.rgb2gray(skimage.io.imread('images_0-3_jpg/{}'.format(img))),img))
+    #del(orig_b)
+
+    #res = analyze(c,b)
 
     # def check_rotation(rotate):
     #     configurations = None
@@ -111,4 +122,4 @@ res = analyze(c,b)
     #             configurations = config
     #         return configurations
 
-    # stored = Parallel(n_jobs=multiprocessing.cpu_count())(delayed(analyze)(mat,c,b) for mat in matches)
+    Parallel(n_jobs=2)(delayed(analyze)(c,skimage.color.rgb2gray(skimage.io.imread('images_0-3_jpg/{}'.format(img))),img) for img in directory)

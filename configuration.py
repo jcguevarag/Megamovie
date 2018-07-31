@@ -28,3 +28,5 @@ class Configuration:
     def __lt__(self, other):
         return  self.area < other.area
 
+    def __str__(self):
+        return '{}, {}'.format(self.area, self.angle)
