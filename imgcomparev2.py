@@ -17,9 +17,9 @@ from joblib import Parallel, delayed
 
 
 
-def analyze(c,b,name):
+def analyze(c,b,name, directory=None):
     print(name)
-    THRESHOLD = 0.5  # The highest pixel value that will be considered as part of the corona
+    THRESHOLD = 0.4  # The highest pixel value that will be considered as part of the corona
     REALLY_BIG = 10  # Placeholder value. Can be changed to anything above 1.
     ROTATE_BY = 5  # Angle rotation step. Change this to change the degrees you want to rotate it by.
     STORE_EVERY = 10  # Every STORE_EVERY configuration will be saved.
@@ -59,12 +59,12 @@ def analyze(c,b,name):
         if configurations is None or config < configurations:
             configurations = config
     # return configurations
-    with open(name[:-3] + '.txt', 'w+') as file:
+    with open(directory +'/' + name[:-4] + '.txt', 'w+') as file:
         file.write(configurations.__str__() +'\n')
 
 if __name__ == '__main__':
     #NUM_CORES = 6
-    orig_a = skimage.io.imread('images_0-3_jpg/7b1c921576ecd4a6d1164812eded78846c75b9806acab57a954c44a9b0093366_level_0.fits_2853.jpg')
+    orig_a = skimage.io.imread('images_0-3_jpg/ae5e4795c18760ff3ae631c025aba9d499cf2838f812661467a814797231d697_level_0.fits_4083.jpg')
     #orig_b = skimage.io.imread('images_0-3_jpg/6f9bcddca6852008ca12665ea1fb172a26a6548dd0ccc73d944b8ddbc632e564_level_0.fits_2597.jpg')
 
     a = skimage.color.rgb2gray(orig_a)  # The static, already aligned image in grayscale

@@ -1,10 +1,8 @@
 import os
 
-directory = os.listdir(os.listdir('.')[-2])
-directory = ['textFiles/' + x for x in directory]
-
-with open('serialized_rotations.txt', 'w+') as write_to:
+directory = os.listdir('bin_9')
+with open('serialized_rotations11.txt', 'w+') as write_to:
     for file in directory:
-        with open(file , 'r') as read_file:
+        with open('bin_9/' + file , 'r') as read_file:
             a = read_file.readline()
-            write_to.write(file[10:-5] + ': ' + str(int(a.rstrip().split(",")[1])) + '\n')
+            write_to.write(file[:-4] + ': ' + str(int(a.rstrip().split(",")[1])) + '\n')
